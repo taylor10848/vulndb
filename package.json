@@ -1,0 +1,23 @@
+{
+  "main": "./integration.js",
+  "name": "vulndb",
+  "version": "1.0.0-beta",
+  "private": true,
+  "license": "MIT",
+  "author": "Polarity",
+  "dependencies": {
+    "request": "^2.75",
+    "async": "2.1.4"
+  },
+  "devDependencies": {
+    "chai": "~3.5",
+    "mocha": "~3.2",
+    "node-ssh": "^5.1.1",
+    "node-watch": "^0.5.8",
+    "scp2": "^0.5.0"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --recursive",
+    "dev": "./sync.js"
+  }
+}
