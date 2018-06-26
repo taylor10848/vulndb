@@ -2,6 +2,10 @@
 
 ![image](https://img.shields.io/badge/status-beta-green.svg)
 
+## Setting up an API key
+
+TODO add instructions 
+
 ## vulndb Integration Options
 
 ### Option 1

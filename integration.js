@@ -1,15 +1,53 @@
 let async = require('async');
 let config = require('./config/config');
+let request = require('request');
 
 let Logger;
+
+let requestWithDefaults;
 let requestOptions = {};
 
-function getRequestOptions() {
-    return JSON.parse(JSON.stringify(requestOptions));
-}
+const host = 'vulndb2.cyberriskanalytics.com';
 
 function doLookup(entities, options, callback) {
-    callback(null, null);
+    let targetHost = options.testHost || host;
+    let results = [];
+
+    async.each(entities, (entity, done) => {
+        if (entity.types.indexOf('custom.cve') === -1) {
+            Logger.warn(`received an entity ${entity.type} ${entity.types} type not CVE, ignoring entity`);
+            results.push({
+                entity: entity,
+                data: null
+            });
+            done();
+            return;
+        }
+
+        request({
+            url: `https://${targetHost}/api/v1/vulnerabilities/${entity.value}/find_by_cve_id`,
+            oauth: {
+                consumer_key: options.key,
+                consumer_secret: options.secret
+            }
+        }, function (err, res, body) {
+            if (err || res.statusCode != 200) {
+                Logger.error('Entity lookup failed for ' + entity.value, { error: err, statusCode: res.statusCode });
+                done({ error: err, statusCode: res.statusCode });
+            } else {
+                results.push({
+                    entity: entity,
+                    data: {
+                        summary: ['test'],
+                        details: body
+                    }
+                });
+                done();
+            }
+        });
+    }, err => {
+        callback(err, results);
+    });
 }
 
 function startup(logger) {
@@ -38,6 +76,8 @@ function startup(logger) {
     if (typeof config.request.rejectUnauthorized === 'boolean') {
         requestOptions.rejectUnauthorized = config.request.rejectUnauthorized;
     }
+
+    requestWithDefaults = request.defaults(requestOptions);
 }
 
 function validateStringOption(errors, options, optionName, errMessage) {
