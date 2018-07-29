@@ -7,7 +7,79 @@ let Logger;
 let requestWithDefaults;
 let requestOptions = {};
 
-const host = 'vulndb2.cyberriskanalytics.com';
+const host = 'vulndb.cyberriskanalytics.com';
+
+let responseJson = `
+{
+    "results": [
+        {
+            "vulndb_id": "1",
+            "title": "2",
+            "disclosure_date": "3",
+            "discovery_date": "4",
+            "exploit_publish_date": "5",
+            "keywords": "6",
+            "description": "7",
+            "solution": "8",
+            "manual_notes": "9",
+            "t_description": "10",
+            "solution_date": "11",
+            "vendor_informed_date": "12",
+            "vendor_ack_date": "13",
+            "third_party_solution_date": "14",
+            "classifications": [{
+                    "id": "15",
+                    "name": "16",
+                    "longname": "17",
+                    "description": "18",
+                    "mediumtext": "19"
+            }],
+            "authors": [{
+                    "id": "20",
+                    "name": "21",
+                    "company": "22",
+                    "email": "23",
+                    "company_url": "24",
+                    "country": "25"
+            }],
+            "ext_references": [{
+                    "value": "26",
+                    "type": "27"
+            }],
+            "ext_texts": [{
+                    "value": "28",
+                    "type": "29"
+            }],
+            "cvss_metrics": [{
+                "id": "30",
+                "access_vector": "31",
+                "access_complexity": "32",
+                "authentication": "33",
+                "confidentiality_impact": "34",
+                "integrity_impact": "35",
+                "availability_impact": "36",
+                "source": "37",
+                "cve_id": "38",
+                "score": "39",
+                "calculated_cvss_base_score": "40"
+            }]
+        }
+    ]
+}
+`;
+
+function handleRequestError(request) {
+    return (options, expectedStatusCode, callback) => {
+        return request(options, (err, resp, body) => {
+            if (err || resp.statusCode !== expectedStatusCode) {
+                Logger.error(`error during http request to ${options.url}`, { error: err, status: resp ? resp.statusCode : 'unknown' });
+                callback({ error: err, statusCode: resp ? resp.statusCode : 'unknown' });
+            } else {
+                callback(null, body);
+            }
+        });
+    };
+}
 
 function doLookup(entities, options, callback) {
     let targetHost = options.testHost || host;
@@ -24,22 +96,21 @@ function doLookup(entities, options, callback) {
             return;
         }
 
-        request({
+        requestWithDefaults({
             url: `https://${targetHost}/api/v1/vulnerabilities/${entity.value}/find_by_cve_id`,
             oauth: {
                 consumer_key: options.key,
                 consumer_secret: options.secret
             }
-        }, function (err, res, body) {
-            if (err || res.statusCode != 200) {
-                Logger.error('Entity lookup failed for ' + entity.value, { error: err, statusCode: res.statusCode });
-                done({ error: err, statusCode: res.statusCode });
+        }, 200, function (err, body) {
+            if (err) {
+                done(err);
             } else {
                 results.push({
                     entity: entity,
                     data: {
                         summary: ['test'],
-                        details: body
+                        details: body.results
                     }
                 });
                 done();
@@ -77,7 +148,10 @@ function startup(logger) {
         requestOptions.rejectUnauthorized = config.request.rejectUnauthorized;
     }
 
-    requestWithDefaults = request.defaults(requestOptions);
+    // requestWithDefaults = handleRequestError(request.defaults(requestOptions));
+    requestWithDefaults = (_0, _1, cb) => {
+        cb(null, JSON.parse(responseJson));
+    };
 }
 
 function validateStringOption(errors, options, optionName, errMessage) {
@@ -93,8 +167,8 @@ function validateStringOption(errors, options, optionName, errMessage) {
 function validateOptions(options, callback) {
     let errors = [];
 
-    // Example of how to validate a string option
-    validateOption(errors, options, 'exampleKey', 'You must provide an example option.');
+    validateStringOption(errors, options, 'key', 'You must client key.');
+    validateStringOption(errors, options, 'secret', 'You must client secret.');
 
     callback(null, errors);
 }

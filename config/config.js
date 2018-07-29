@@ -15,7 +15,7 @@ module.exports = {
      * @type String
      * @required
      */
-    acronym: "vulndb",
+    acronym: "VDB",
     /**
      * Description for this integration which is displayed in the Polarity integrations user interface
      *
@@ -24,6 +24,12 @@ module.exports = {
      */
     description: "TODO vulndb integration description",
     entityTypes: ['ipv4'],
+    customTypes: [
+        {
+            key: 'cve',
+            regex: /CVE-\d{4}-\d{4,7}/
+        }
+    ],
     /**
      * An array of style files (css or less) that will be included for your integration. Any styles specified in
      * the below files can be used in your custom template.
@@ -48,14 +54,6 @@ module.exports = {
         },
         template: {
             file: "./templates/vulndb-block.hbs"
-        }
-    },
-    summary: {
-        component: {
-            file: './components/vulndb-summary.js'
-        },
-        template: {
-            file: './templates/vulndb-summary.hbs'
         }
     },
     request: {
@@ -90,7 +88,7 @@ module.exports = {
         // the directory you specify is writable by the `polarityd:polarityd` user and group.
 
         //directoryPath: '/var/log/polarity-integrations',
-        level: 'info',  //trace, debug, info, warn, error, fatal
+        level: 'trace',  //trace, debug, info, warn, error, fatal
     },
     /**
      * Options that are displayed to the user/admin in the Polarity integration user-interface.  Should be structured
@@ -101,17 +99,8 @@ module.exports = {
      */
     options: [
         {
-            key: "host",
-            name: "Host",
-            description: "example description of this option",
-            default: "",
-            type: "text",
-            userCanEdit: false,
-            adminOnly: true
-        },
-        {
             key: "key",
-            name: "Username",
+            name: "Client Key",
             description: "example description of this option",
             default: "",
             type: "text",
@@ -120,10 +109,10 @@ module.exports = {
         },
         {
             key: "secret",
-            name: "Password",
+            name: "Client Secret",
             description: "example description of this option",
             default: "",
-            type: "text",
+            type: "password",
             userCanEdit: false,
             adminOnly: true
         }
