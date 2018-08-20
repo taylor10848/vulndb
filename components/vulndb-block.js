@@ -1,16 +1,35 @@
+function addItem(items, key, value) {
+    if (value) {
+        let show = !!hideKey[key];
+        items.push({ key: key, value: value, hideable: isHideableKey(key), show: show });
+    }
+}
+
+function isHideableKey(key) {
+    return [
+        'Description',
+        'Solution'
+    ].includes(key);
+}
+
+let hideKey = {};
+
 polarity.export = PolarityComponent.extend({
     details: Ember.computed.alias('block.data.details'),
+    show: Ember.computed('block.data.details', function () {
+        return !hideKey;
+    }),
     results: Ember.computed('block.data.details', function () {
         try {
             return this.get('block.data.details').map(result => {
                 let items = [];
-                items.push({ key: 'Description', value: result.description });
-                items.push({ key: 'Discovery Date', value: result.discovery_date });
-                items.push({ key: 'Disclosure Date', value: result.disclosure_date });
-                items.push({ key: 'Exploit Publish Date', value: result.exploit_publish_date });
-                items.push({ key: 'Solution Date', value: result.solution_date });
-                items.push({ key: 'Keywords', value: result.keywords });
-                items.push({ key: 'Solution', value: result.solution });
+                // addItem(items, 'Description', result.description);
+                addItem(items, 'Discovery Date', result.discovery_date);
+                addItem(items, 'Disclosure Date', result.disclosure_date);
+                addItem(items, 'Exploit Publish Date', result.exploit_publish_date);
+                addItem(items, 'Solution Date', result.solution_date);
+                addItem(items, 'Keywords', result.keywords);
+                // addItem(items, 'Solution', result.solution);
 
                 // TODO fifugre out what value should be returned
                 //let references = result.ext_references.map(reference => reference.type);
@@ -30,5 +49,10 @@ polarity.export = PolarityComponent.extend({
             console.error(e);
             throw e;
         }
-    })
+    }),
+    actions: {
+        toggle: function (key) {
+            hideKey[key] = !hideKey[key]
+        }
+    }
 });

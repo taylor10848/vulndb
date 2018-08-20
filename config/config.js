@@ -23,7 +23,7 @@ module.exports = {
      * @optional
      */
     description: "TODO vulndb integration description",
-    entityTypes: ['ipv4'],
+    entityTypes: [/*'ipv4'*/],
     customTypes: [
         {
             key: 'cve',
