@@ -64,6 +64,9 @@ function doLookup(entities, options, callback) {
                     result.classifications.forEach(classification => {
                         tags[classification.longname] = true;
                     });
+                    result.cvss_metrics.forEach(metric => {
+                        tags[metric.access_vector] = true;
+                    });
                 });
 
                 results.push({

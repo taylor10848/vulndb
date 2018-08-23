@@ -1,24 +1,11 @@
 function addItem(items, key, value) {
     if (value) {
-        let show = !!hideKey[key];
-        items.push({ key: key, value: value, hideable: isHideableKey(key), show: show });
+        items.push({ key: key, value: value });
     }
 }
 
-function isHideableKey(key) {
-    return [
-        'Description',
-        'Solution'
-    ].includes(key);
-}
-
-let hideKey = {};
-
 polarity.export = PolarityComponent.extend({
     details: Ember.computed.alias('block.data.details'),
-    show: Ember.computed('block.data.details', function () {
-        return !hideKey;
-    }),
     results: Ember.computed('block.data.details', function () {
         try {
             return this.get('block.data.details').map(result => {
@@ -38,21 +25,23 @@ polarity.export = PolarityComponent.extend({
                 // TODO metrics
                 // let metrics = result.cvss_metrics.map(metric => metric);
 
+                result.products.forEach(product => {
+                    product.versions = product.versions.slice(0,5);
+                });
+
                 return {
                     title: result.title,
                     items: items,
                     classifications: result.classifications,
-                    authors: result.authors
+                    authors: result.authors,
+                    products: result.products.slice(0,5),
+                    metrics: result.cvss_metrics,
+                    vendors: result.vendors
                 };
             });
         } catch (e) {
             console.error(e);
             throw e;
         }
-    }),
-    actions: {
-        toggle: function (key) {
-            hideKey[key] = !hideKey[key]
-        }
-    }
+    })
 });
