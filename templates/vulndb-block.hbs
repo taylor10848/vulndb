@@ -10,7 +10,13 @@
         {{#each result.items as |item|}}
         <div>
             <span class="p-key">{{item.key}}</span>
+            {{#if item.show}}
             <span class="p-value">{{item.value}}</span>
+            {{/if}} {{#if item.hideable}}
+            <button {{action "toggle" item.key}}>
+                {{#if item.show}} Hide {{else}} Show {{/if}}
+            </button>
+            {{/if}}
         </div>
         {{/each}}
 
@@ -19,12 +25,23 @@
         <div>
             <span>{{item.longname}}</span>
         </div>
-        <!--
+        {{/each}}
+        <br />
+
+        <h1 class="p-title">References</h1>
+        {{#each result.references as |item|}}
         <div>
-            <span class="p-key">Description</span>
-            <span class="p-value">{{item.description}}</span>
+            <a href="{{item.value}}">{{item.type}}</a>
         </div>
-        -->
+        {{/each}}
+        <br />
+
+        <h1 class="p-title">VTEMs</h1>
+        {{#each result.vtems as |item|}}
+        <div>
+            <span class="p-key">{{item.vtem_name}}</span>
+            <span class="p-value">{{item.vtem_metric}}</span>
+        </div>
         {{/each}}
         <br />
 
@@ -42,27 +59,21 @@
             <span class="p-key">Affected?</span>
             <span class="p-value">{{version.affected}}</span>
         </div>
+        {{#each version.cpe as |cpe|}}
+        <span class="p-key">{{cpe.cpe}}</span>
+        <span class="p-value">{{cpe.type}}</span>
+        <br />
+        {{/each}}
         <br /> {{/each}} {{/each}}
         <br />
 
         <h1 class="p-title">Authors</h1>
-        {{#each result.authors as |item|}}
+        {{#each result.authors as |author|}} {{#each author.fields as |field|}}
         <div>
-            <span class="p-key">Name</span>
-            <span class="p-value">{{item.name}}</span>
+            <span class="p-key">{{field.key}}</span>
+            <span class="p-value">{{field.value}}</span>
         </div>
-        <div>
-            <span class="p-key">Company</span>
-            <span class="p-value">{{item.company}}</span>
-        </div>
-        <div>
-            <span class="p-key">Country</span>
-            <span class="p-value">{{item.country}}</span>
-        </div>
-        <div>
-            <span class="p-key">Email</span>
-            <span class="p-value">{{item.email}}</span>
-        </div>
+        {{/each}}
         <br /> {{/each}}
         <hr />
     </div>

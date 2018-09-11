@@ -42,6 +42,11 @@ function doLookup(entities, options, callback) {
             oauth: {
                 consumer_key: options.key,
                 consumer_secret: options.secret
+            },
+            qs: {
+                vtem: true,
+                show_cpe: true,
+                full_reference_url: true
             }
         }, 200, function (err, body) {
             Logger.trace('results from vulndb', { results: body });
@@ -60,11 +65,14 @@ function doLookup(entities, options, callback) {
                 Logger.trace('result sent to client', { results: body.results });
                 let tags = {};
 
+
                 body.results.forEach(result => {
+
                     result.classifications.forEach(classification => {
                         tags[classification.longname] = true;
                     });
                     result.cvss_metrics.forEach(metric => {
+                        tags['CVSS Score: ' + metric.score] = true;
                         tags[metric.access_vector] = true;
                     });
                 });
