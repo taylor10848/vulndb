@@ -8,6 +8,15 @@ polarity.export = PolarityComponent.extend({
         let results = this.get('block.data.details');
         this.set('results', results);
     })),
+    hasAuthors: Ember.computed('block.data.details', function () {
+        let results = this.get('block.data.details');
+        for (let i = 0; i < results.length; i++) {
+            if (results[i].authors && results[i].authors.length > 0) {
+                return true;
+            }
+        }
+        return false;
+    }),
     actions: {
         toggle: function (key) {
             let results = this.get('results');

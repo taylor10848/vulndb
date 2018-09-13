@@ -67,7 +67,9 @@
         <br /> {{/each}} {{/each}}
         <br />
 
+        {{#if hasAuthors}}
         <h1 class="p-title">Authors</h1>
+        {{/if}}
         {{#each result.authors as |author|}} {{#each author.fields as |field|}}
         <div>
             <span class="p-key">{{field.key}}</span>
