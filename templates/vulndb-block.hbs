@@ -2,7 +2,8 @@
     {{#each results as |result|}}
     <div>
         <div>
-            <a class="p-link" href="https://vulndb.cyberriskanalytics.com/vulnerabilities/{{result.vulndb_id}}">View in VulnDB</a>
+            <a class="p-link" href="https://vulndb.cyberriskanalytics.com/vulnerabilities/{{result.vulndb_id}}">View in
+                VulnDB</a>
         </div>
         <h1 class="p-title">
             {{result.title}}
@@ -21,9 +22,13 @@
         {{/each}}
 
         <h1 class="p-title">Classifications</h1>
-        {{#each result.classifications as |item|}}
+        {{#each result.classifications as |classificationCategory|}}
         <div>
-            <span>{{item.longname}}</span>
+            <strong>{{classificationCategory.category}}</strong>
+            {{#each classificationCategory.classifications as |classification|}}
+            <div>{{classification}}</div>
+            {{/each}}
+            <br />
         </div>
         {{/each}}
         <br />

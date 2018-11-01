@@ -171,7 +171,7 @@ function formatForView(result) {
         vulndb_id: result.vulndb_id,
         title: result.title,
         items: items,
-        classifications: result.classifications,
+        classifications: categorizeClassifications(result.classifications),
         authors: authors,
         products: result.products.slice(0, 5),
         metrics: result.cvss_metrics,
@@ -179,6 +179,47 @@ function formatForView(result) {
         vtems: result.vtems,
         vendors: result.vendors
     };
+}
+
+let classificationIdToCategory = {};
+
+function addClassificationIdToCategory(category, ids) {
+    ids.forEach(id => {
+        classificationIdToCategory[id] = category;
+    });
+}
+
+addClassificationIdToCategory('Location', [1, 4, 2, 42, 46, 3, 31, 32, 5]);
+addClassificationIdToCategory('Attack Type', [6, 7, 11, 68, 12, 13, 14, 15, 16]);
+addClassificationIdToCategory('Impact', [17, 18, 19, 20]);
+addClassificationIdToCategory('Solution', [35, 34, 38, 36, 50, 37, 45, 60]);
+addClassificationIdToCategory('Exploit', [63, 21, 55, 54, 24, 61, 39]);
+addClassificationIdToCategory('Disclosure', [64, 41, 40, 49, 52, 43, 44, 53, 57, 65, 66, 67]);
+addClassificationIdToCategory('VulnDB', [47, 48, 29, 28, 26, 62, 51, 56, 58, 59]);
+
+function categorizeClassifications(classifications) {
+    let classificationsByCategoriesMap = {};
+
+    classifications.forEach(classification => {
+        let classificationCategory = classificationsByCategoriesMap[classificationIdToCategory[classification.id]];
+
+        if (!classificationCategory) {
+            classificationCategory = classificationsByCategoriesMap[classificationIdToCategory[classification.id]] = [];
+        }
+
+        classificationCategory.push(classification.longname);
+    });
+
+    let classificationsByCategories = [];
+
+    Object.keys(classificationsByCategoriesMap).forEach(category => {
+        classificationsByCategories.push({
+            category: category,
+            classifications: classificationsByCategoriesMap[category]
+        });
+    });
+
+    return classificationsByCategories;
 }
 
 function validateStringOption(errors, options, optionName, errMessage) {
