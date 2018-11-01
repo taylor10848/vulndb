@@ -22,7 +22,7 @@ module.exports = {
      * @type String
      * @optional
      */
-    description: "TODO vulndb integration description",
+    description: "Risk Based Security's VulnDB allows the lookup of CVEs by CVE ID.",
     entityTypes: [/*'ipv4'*/],
     customTypes: [
         {
@@ -101,7 +101,7 @@ module.exports = {
         {
             key: "key",
             name: "Client Key",
-            description: "example description of this option",
+            description: "The Client Key to authenticate with, created via \"API > Overview > Register new application\"",
             default: "",
             type: "text",
             userCanEdit: false,
@@ -110,7 +110,7 @@ module.exports = {
         {
             key: "secret",
             name: "Client Secret",
-            description: "example description of this option",
+            description: "The Client Secret to authenticate with, created via \"API > Overview > Register new application\"",
             default: "",
             type: "password",
             userCanEdit: false,

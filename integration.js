@@ -168,6 +168,7 @@ function formatForView(result) {
     });
 
     return {
+        vulndb_id: result.vulndb_id,
         title: result.title,
         items: items,
         classifications: result.classifications,
