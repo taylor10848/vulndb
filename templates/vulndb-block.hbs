@@ -34,9 +34,14 @@
         <br />
 
         <h1 class="p-title">References</h1>
-        {{#each result.references as |item|}}
+        {{#each result.extReferences as |item|}}
         <div>
             <a href="{{item.value}}">{{item.type}}</a>
+        </div>
+        {{/each}}
+        {{#each result.references as |item|}}
+        <div>
+            <a href="{{item.url}}">{{item.source}}</a>
         </div>
         {{/each}}
         <br />

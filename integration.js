@@ -22,6 +22,19 @@ function handleRequestError(request) {
     };
 }
 
+// This function validates that a CVE exists before trying to look it up
+// Because the CVE standard was created in 1999, we know that any CVE with 
+// a year entry of 1998 or earlier will not exist.  Likewise, a CVE with a 
+// date later than the current year will also not exist (we check current year 
+// + 1 to account for any date time or overlap issues).  We can safely 
+// discard these results as erroneous parsing of the screen text.
+function nonexistantCVE(entity) {
+    let cve = entity.value;
+    let year = parseInt(/CVE-(\d{4})-\d{4,7}/.exec(cve)[1]);
+
+    return year < 1999 || year > new Date().getFullYear() + 1;
+}
+
 function doLookup(entities, options, callback) {
     let targetHost = options.testHost || host;
     let results = [];
@@ -29,6 +42,16 @@ function doLookup(entities, options, callback) {
     async.each(entities, (entity, done) => {
         if (entity.types.indexOf('custom.cve') === -1) {
             Logger.warn(`received an entity ${entity.type} ${entity.types} type not CVE, ignoring entity`);
+            results.push({
+                entity: entity,
+                data: null
+            });
+            done();
+            return;
+        }
+
+        if (nonexistantCVE(entity)) {
+            Logger.error('not looking up CVE because it can\'t exist', { cve: entity.value });
             results.push({
                 entity: entity,
                 data: null
@@ -46,7 +69,8 @@ function doLookup(entities, options, callback) {
             qs: {
                 vtem: true,
                 show_cpe: true,
-                full_reference_url: true
+                full_reference_url: true,
+                additional_info: true
             }
         }, 200, function (err, body) {
             Logger.trace('results from vulndb', { results: body });
@@ -175,7 +199,10 @@ function formatForView(result) {
         authors: authors,
         products: result.products.slice(0, 5),
         metrics: result.cvss_metrics,
-        references: result.ext_references,
+        extReferences: result.ext_references,
+        references: result.nvd_additional_information ? result.nvd_additional_information.reduce(
+            (accum, next) => accum.concat(next.references), []
+        ) : [],
         vtems: result.vtems,
         vendors: result.vendors
     };
