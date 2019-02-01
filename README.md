@@ -1,27 +1,27 @@
-# Polarity vulndb Integration
+# Polarity VulnDB Integration
 
-![image](https://img.shields.io/badge/status-beta-green.svg)
+The Polarity - Risk Based Security's VulnDB integration, allows Polarity to search VulnDB for CVE information.
 
-## Setting up an API key
+![image](https://user-images.githubusercontent.com/22529325/52147727-99fb0d80-2635-11e9-9a8e-d2251c6852f2.gif)
 
-TODO add instructions 
+## Setting up an API Account
 
-## vulndb Integration Options
+In order to obtain a VulnDB Client Key and Secret Key, you need to register an application within VulnDB. To do so, navigate to "API" then click on "Overview". From the Overview page, there is an Oath Client Application section, within that section click on the "Register New Application" button. Once a new application is registered, you will be presented with your Client Key and Client Secret Key.
 
-### Option 1
 
-Describe option 1 here.
+## Vulndb Integration Options
 
-### Option 2
+### VulnDB Client Key
 
-Describe option 2 here.
+Consumer key created by VulnDB, used in order to access VulnDB through the Oath standards.
 
-### Option 3
+### VulnDB Client Secret
 
-Describe option 3 here.
+Consumer key created by VulnDB, used in order to access VulnDB through the Oath standards.
+
 
 ## Polarity
 
-Polarity is a memory-augmentation platform that improves and accelerates analyst decision making.  For more information about the Polarity platform please see: 
+Polarity is a memory-augmentation platform that improves and accelerates analyst decision making.  For more information about the Polarity platform please see:
 
 https://polarity.io/
