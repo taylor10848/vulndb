@@ -1,4 +1,4 @@
-# Polarity VulnDB Integration 17Jan2023 update
+# Polarity VulnDB Integration 17Jan2023 update 11:49am ET
 
 The Polarity - Risk Based Security's VulnDB integration, allows Polarity to search VulnDB for CVE information.
 
